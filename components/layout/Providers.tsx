@@ -3,21 +3,29 @@
 import '@rainbow-me/rainbowkit/styles.css'
 
 import {
-  getDefaultConfig,
   RainbowKitProvider,
+  darkTheme,
+  connectorsForWallets,
 } from '@rainbow-me/rainbowkit'
 
 import {
+  metaMaskWallet,
+  rabbyWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets'
+
+import {
   WagmiProvider,
+  createConfig,
   http,
 } from 'wagmi'
+
+import { defineChain } from 'viem'
 
 import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query'
-
-import { defineChain } from 'viem'
 
 /* ARC TESTNET */
 
@@ -50,12 +58,29 @@ const arcTestnet = defineChain({
   testnet: true,
 })
 
+/* WALLETS */
+
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        metaMaskWallet,
+        rabbyWallet,
+        walletConnectWallet,
+      ],
+    },
+  ],
+  {
+    appName: 'BlizMarket',
+    projectId: 'blizmarket',
+  }
+)
+
 /* WAGMI CONFIG */
 
-const config = getDefaultConfig({
-  appName: 'BlizMarket',
-
-  projectId: 'blizmarket',
+const config = createConfig({
+  connectors,
 
   chains: [arcTestnet],
 
@@ -64,11 +89,11 @@ const config = getDefaultConfig({
   },
 })
 
-/* QUERY CLIENT */
+/* QUERY */
 
 const queryClient = new QueryClient()
 
-/* PROVIDER */
+/* PROVIDERS */
 
 export default function Providers({
   children,
@@ -80,7 +105,9 @@ export default function Providers({
 
       <QueryClientProvider client={queryClient}>
 
-        <RainbowKitProvider>
+        <RainbowKitProvider
+          theme={darkTheme()}
+        >
 
           {children}
 

@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
+
 import WalletButton from '@/components/wallet/WalletButton'
 
 export default function Navbar() {
@@ -12,9 +13,10 @@ export default function Navbar() {
   return (
     <>
       {/* TOP NAVBAR */}
-      <nav className="flex items-center justify-between px-6 py-5 border-b border-zinc-800 bg-black">
+      <nav className="flex items-center justify-between px-6 py-5 border-b border-zinc-800 bg-black sticky top-0 z-50">
 
-        <div className="flex items-center gap-8">
+        {/* LEFT */}
+        <div className="flex items-center">
 
           {/* HAMBURGER */}
           <button
@@ -24,7 +26,13 @@ export default function Navbar() {
             <Menu size={34} />
           </button>
 
- 
+        </div>
+
+        {/* RIGHT */}
+        <div>
+
+          <WalletButton />
+
         </div>
 
       </nav>
@@ -39,7 +47,7 @@ export default function Navbar() {
             {/* HEADER */}
             <div className="flex items-center justify-between mb-12">
 
-              <h2 className="text-3xl font-bold text-blue-500">
+              <h2 className="text-3xl font-bold text-white">
                 Menu
               </h2>
 
@@ -76,7 +84,7 @@ export default function Navbar() {
                   fontWeight: '700',
                 }}
               >
-                Market
+                Markets
               </Link>
 
               <Link
@@ -112,8 +120,6 @@ export default function Navbar() {
             className="flex-1 bg-black/70"
             onClick={() => setOpen(false)}
           />
-
-          <WalletButton />
 
         </div>
       )}

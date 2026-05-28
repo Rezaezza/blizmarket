@@ -6,8 +6,12 @@ export default function WalletButton() {
 
   return (
     <ConnectButton
-      showBalance={true}
+      showBalance={false}
       chainStatus="icon"
+      accountStatus={{
+        smallScreen: 'avatar',
+        largeScreen: 'full',
+      }}
     />
   )
 }
