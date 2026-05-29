@@ -1,32 +1,31 @@
-const hre = require('hardhat')
-
 async function main() {
 
   const usdcAddress =
-    '0xYourUSDCAddress'
+    "0x3600000000000000000000000000000000000000";
 
   const Contract =
-    await hre.ethers.getContractFactory(
-      'BlizPredictionMarket'
-    )
+    await ethers.getContractFactory(
+      "BlizPredictionMarket"
+    );
+
+  console.log("Deploying...");
 
   const contract =
     await Contract.deploy(
       usdcAddress
-    )
+    );
 
-  await contract.waitForDeployment()
+  await contract.waitForDeployment();
 
   console.log(
-    'Contract deployed:',
+    "Contract deployed:",
     await contract.getAddress()
-  )
+  );
 }
 
-main().catch((error) => {
-
-  console.error(error)
-
-  process.exitCode = 1
-
-})
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

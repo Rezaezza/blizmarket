@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import {
   AdvancedRealTimeChart,
@@ -13,6 +13,23 @@ import {
   DollarSign,
 } from 'lucide-react'
 
+import {
+  useWriteContract,
+} from 'wagmi'
+
+import abi from '@/abi/BlizPredictionMarket.json'
+
+import usdcAbi from '@/abi/USDC.json'
+
+import {
+  CONTRACT_ADDRESS,
+} from '@/lib/contract'
+
+import {
+  useAccount,
+  usePublicClient,
+} from 'wagmi'
+
 export default function TradingTerminal() {
 
   const [symbol, setSymbol] =
@@ -21,8 +38,206 @@ export default function TradingTerminal() {
   const [amount, setAmount] =
     useState('100')
 
+const [loading,setLoading] =
+  useState(false) 
+
+  const [positions, setPositions] =
+  useState<any[]>([])
+
+  const {
+  writeContractAsync,
+} = useWriteContract()
+
+const { address } =
+  useAccount()
+
+const publicClient =
+  usePublicClient()
+
   const payout =
   (Number(amount) * 1.8).toFixed(2)
+
+  const loadPositions =
+  async () => {
+
+    if (
+      !address ||
+      !publicClient
+    ) return
+
+    try {
+
+      const count =
+        await publicClient.readContract({
+
+          address:
+            CONTRACT_ADDRESS,
+
+          abi,
+
+          functionName:
+            'getTradesCount',
+
+        })
+
+      const trades = []
+
+      for (
+        let i = 0;
+        i < Number(count);
+        i++
+      ) {
+
+        const trade =
+          await publicClient.readContract({
+
+            address:
+              CONTRACT_ADDRESS,
+
+            abi,
+
+            functionName:
+              'getTrade',
+
+            args: [BigInt(i)],
+
+          })
+
+        if (
+
+          trade[0]
+            .toLowerCase() ===
+          address
+            .toLowerCase()
+
+        ) {
+
+          trades.push({
+
+            trader:
+              trade[0],
+
+            symbol:
+              trade[1],
+
+            isUp:
+              trade[2],
+
+            amount:
+              Number(
+                trade[3]
+              ) / 1_000_000,
+
+          })
+
+        }
+
+      }
+
+      setPositions(
+        trades.reverse()
+      )
+
+    } catch (err) {
+
+      console.error(err)
+
+    }
+
+  }
+
+  const placeTrade = async (
+  isUp: boolean
+) => {
+
+  setLoading(true)
+
+  try {
+
+    const coin =
+      symbol.includes('BTC')
+        ? 'BTC'
+        : symbol.includes('ETH')
+        ? 'ETH'
+        : 'SOL'
+
+    const amountInUSDC =
+      BigInt(
+        Number(amount) * 1_000_000
+      )
+
+    /*
+    APPROVE USDC
+    */
+
+    await writeContractAsync({
+
+      address:
+        '0x3600000000000000000000000000000000000000',
+
+      abi: usdcAbi,
+
+      functionName: 'approve',
+
+      args: [
+        CONTRACT_ADDRESS,
+        amountInUSDC,
+      ],
+
+    })
+
+    /*
+    PLACE PREDICTION
+    */
+
+    await writeContractAsync({
+
+      address: CONTRACT_ADDRESS,
+
+      abi,
+
+      functionName:
+        'placePrediction',
+
+      args: [
+        coin,
+        isUp,
+        amountInUSDC,
+      ],
+
+    })
+
+    await loadPositions()
+
+    alert(
+      `${coin} ${
+        isUp
+          ? 'UP'
+          : 'DOWN'
+      } SUCCESS`
+    )
+
+  } catch (err) {
+
+    console.error(err)
+
+    alert(
+      'Transaction Failed'
+    )
+
+  } finally {
+
+    setLoading(false)
+
+  }
+
+}
+
+useEffect(() => {
+
+  loadPositions()
+
+}, [address])
 
   return (
     <div className="grid xl:grid-cols-4 gap-6">
@@ -175,7 +390,12 @@ export default function TradingTerminal() {
           <div className="grid grid-cols-2 gap-4 mt-8">
 
             {/* UP */}
-            <button className="bg-green-600 hover:bg-green-500 transition rounded-3xl py-6">
+            <button
+  onClick={() =>
+    placeTrade(true)
+  }
+  className="bg-green-600 hover:bg-green-500 transition rounded-3xl py-6"
+>
 
               <div className="flex items-center justify-center gap-3">
 
@@ -190,7 +410,12 @@ export default function TradingTerminal() {
             </button>
 
             {/* DOWN */}
-            <button className="bg-red-600 hover:bg-red-500 transition rounded-3xl py-6">
+            <button
+  onClick={() =>
+    placeTrade(false)
+  }
+  className="bg-red-600 hover:bg-red-500 transition rounded-3xl py-6"
+>
 
               <div className="flex items-center justify-center gap-3">
 
@@ -209,45 +434,74 @@ export default function TradingTerminal() {
         </div>
 
         {/* ACTIVE POSITION */}
-        <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+ <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
 
-          <h2 className="text-2xl font-bold mb-6">
-            Active Positions
-          </h2>
+  <h2 className="text-2xl font-bold mb-6">
+    Active Positions
+  </h2>
 
-          <div className="space-y-4">
+  <div className="space-y-4">
 
-            <div className="bg-zinc-900 rounded-2xl p-4">
+    {positions.length === 0 ? (
 
-              <div className="flex justify-between">
+      <div className="bg-zinc-900 rounded-2xl p-4">
 
-                <span>BTC UP</span>
+        No Positions
 
-                <span className="text-green-500">
-                  +82 USDC
-                </span>
+      </div>
 
-              </div>
+    ) : (
 
-            </div>
+      positions.map(
+        (
+          trade,
+          index
+        ) => (
 
-            <div className="bg-zinc-900 rounded-2xl p-4">
+          <div
+            key={index}
+            className="bg-zinc-900 rounded-2xl p-4"
+          >
 
-              <div className="flex justify-between">
+            <div className="flex justify-between">
 
-                <span>ETH DOWN</span>
+              <span>
 
-                <span className="text-red-500">
-                  -24 USDC
-                </span>
+                {trade.symbol}
+                {' '}
+                {trade.isUp
+                  ? 'UP'
+                  : 'DOWN'}
 
-              </div>
+              </span>
+
+              <span
+                className={
+                  trade.isUp
+                    ? 'text-green-500'
+                    : 'text-red-500'
+                }
+              >
+
+                {trade.amount}
+                {' '}
+                USDC
+
+              </span>
 
             </div>
 
           </div>
 
-        </div>
+        )
+
+      )
+
+    )}
+
+  </div>
+
+</div>
 
       </div>
 

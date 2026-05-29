@@ -23,19 +23,16 @@
     "wagmi": "^2.19.5"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ignition": "^3.1.6",
-    "@nomicfoundation/hardhat-toolbox": "^7.0.0",
-    "@nomicfoundation/hardhat-toolbox-viem": "^5.0.6",
+    "@nomicfoundation/hardhat-toolbox": "^6.1.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^22.19.19",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
-    "forge-std": "github:foundry-rs/forge-std#v1.9.4",
-    "hardhat": "^3.6.0",
+    "hardhat": "^2.22.17",
     "tailwindcss": "^4",
     "typescript": "~6.0.3"
   },
-  "type": "module"
+  "typescript": "~6.0.3"
 }

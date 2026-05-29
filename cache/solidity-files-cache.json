@@ -1,0 +1,78 @@
+{
+  "_format": "hh-sol-cache-2",
+  "files": {
+    "C:\\Users\\ASUS\\blizmarket\\contracts\\BlizMarket.sol": {
+      "lastModificationDate": 1779949257427,
+      "contentHash": "0d9280564f7ee334ab4d509e74bd901e",
+      "sourceName": "contracts/BlizMarket.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "BlizMarket"
+      ]
+    },
+    "C:\\Users\\ASUS\\blizmarket\\contracts\\BlizPredictionMarket.sol": {
+      "lastModificationDate": 1779974181889,
+      "contentHash": "e19dd29ffdb25c01bbd4fdccfb32a170",
+      "sourceName": "contracts/BlizPredictionMarket.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "BlizPredictionMarket",
+        "IERC20"
+      ]
+    }
+  }
+}

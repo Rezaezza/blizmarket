@@ -1,5 +1,5 @@
 {
-  "_format": "hh3-artifact-1",
+  "_format": "hh-sol-artifact-1",
   "contractName": "IERC20",
   "sourceName": "contracts/BlizPredictionMarket.sol",
   "abi": [
@@ -60,8 +60,5 @@
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "linkReferences": {},
-  "deployedLinkReferences": {},
-  "immutableReferences": {},
-  "inputSourceName": "project/contracts/BlizPredictionMarket.sol",
-  "buildInfoId": "solc-0_8_28-e5beff92f3a2166882003c916a1258e22112ca78"
+  "deployedLinkReferences": {}
 }

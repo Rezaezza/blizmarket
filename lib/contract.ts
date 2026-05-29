@@ -1,2 +1,2 @@
 export const CONTRACT_ADDRESS =
-  '0xYourContractAddress'
+  '0x09031F284efcd9C6E57e4A480A0F798aE5b959cc'

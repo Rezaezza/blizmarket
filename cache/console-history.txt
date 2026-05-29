@@ -1,0 +1,3 @@
+await ethers.provider.getBalance(deployer.address)
+await deployer.getAddress()
+const [deployer] = await ethers.getSigners()
