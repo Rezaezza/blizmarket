@@ -1,3 +1,5 @@
+'use client'
+
 import {
   TrendingUp,
   Wallet,
@@ -5,45 +7,121 @@ import {
   Activity,
 } from 'lucide-react'
 
-const activePositions = [
-  {
-    coin: 'BTC',
-    side: 'UP',
-    amount: '250 USDC',
-    pnl: '+82 USDC',
-    color: 'text-green-500',
-  },
-  {
-    coin: 'ETH',
-    side: 'DOWN',
-    amount: '120 USDC',
-    pnl: '-14 USDC',
-    color: 'text-red-500',
-  },
-]
+import {
+  useEffect,
+  useState,
+} from 'react'
 
-const history = [
-  {
-    coin: 'SOL',
-    side: 'UP',
-    result: 'WIN',
-    payout: '+120 USDC',
-  },
-  {
-    coin: 'BTC',
-    side: 'DOWN',
-    result: 'LOSE',
-    payout: '-50 USDC',
-  },
-  {
-    coin: 'ETH',
-    side: 'UP',
-    result: 'WIN',
-    payout: '+88 USDC',
-  },
-]
+import {
+  useAccount,
+  usePublicClient,
+} from 'wagmi'
+
+import abi from '@/abi/BlizPredictionMarket.json'
+
+import {
+  CONTRACT_ADDRESS,
+} from '@/lib/contract'
+
 
 export default function PortfolioPage() {
+
+  const { address } =
+  useAccount()
+
+const publicClient =
+  usePublicClient()
+
+const [volume, setVolume] =
+  useState(0)
+
+const [wins, setWins] =
+  useState(0)
+
+const [losses, setLosses] =
+  useState(0)
+
+useEffect(() => {
+
+  const loadStats =
+    async () => {
+
+      if (
+        !address ||
+        !publicClient
+      ) return
+
+      try {
+
+        const userVolume =
+          await publicClient.readContract({
+
+            address:
+              CONTRACT_ADDRESS,
+
+            abi,
+
+            functionName:
+              'userVolume',
+
+            args: [address],
+
+          })
+
+        const userWins =
+          await publicClient.readContract({
+
+            address:
+              CONTRACT_ADDRESS,
+
+            abi,
+
+            functionName:
+              'userWins',
+
+            args: [address],
+
+          })
+
+        const userLosses =
+          await publicClient.readContract({
+
+            address:
+              CONTRACT_ADDRESS,
+
+            abi,
+
+            functionName:
+              'userLosses',
+
+            args: [address],
+
+          })
+
+        setVolume(
+          Number(userVolume) /
+          1_000_000
+        )
+
+        setWins(
+          Number(userWins)
+        )
+
+        setLosses(
+          Number(userLosses)
+        )
+
+      } catch (err) {
+
+        console.error(err)
+
+      }
+
+    }
+
+  loadStats()
+
+}, [address, publicClient])
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
@@ -78,7 +156,7 @@ export default function PortfolioPage() {
           </div>
 
           <h3 className="text-4xl font-bold mt-6">
-            12,450 USDC
+            {volume.toFixed(2)} USDC
           </h3>
 
         </div>
@@ -116,7 +194,15 @@ export default function PortfolioPage() {
           </div>
 
           <h3 className="text-4xl font-bold mt-6">
-            78%
+            {
+  wins + losses > 0
+    ? (
+        wins /
+        (wins + losses) *
+        100
+      ).toFixed(1)
+    : 0
+}%
           </h3>
 
         </div>
@@ -135,7 +221,7 @@ export default function PortfolioPage() {
           </div>
 
           <h3 className="text-4xl font-bold mt-6">
-            124
+            {wins + losses}
           </h3>
 
         </div>

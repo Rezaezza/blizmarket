@@ -1,3 +1,8 @@
+)  "0x084A95B785e52F859b3c737d4e4A11333dEec619"await usdc.balanceOf(
+)  "0x3600000000000000000000000000000000000000"  "contracts/BlizPredictionMarketV2.sol:IERC20",const usdc = await ethers.getContractAt(
+await usdc.balanceOf(owner.address)
+const [owner] = await ethers.getSigners()
+)  "0x3600000000000000000000000000000000000000"  "contracts/BlizPredictionMarketV2.sol:IERC20",const usdc = await ethers.getContractAt(
 await ethers.provider.getBalance(deployer.address)
 await deployer.getAddress()
 const [deployer] = await ethers.getSigners()

@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-import {
-  AdvancedRealTimeChart,
-} from 'react-ts-tradingview-widgets'
+import dynamic from 'next/dynamic'
 
 import {
   TrendingUp,
@@ -30,6 +28,20 @@ import {
   usePublicClient,
 } from 'wagmi'
 
+const AdvancedRealTimeChart =
+  dynamic(
+    () =>
+      import(
+        'react-ts-tradingview-widgets'
+      ).then(
+        (mod) =>
+          mod.AdvancedRealTimeChart
+      ),
+    {
+      ssr: false,
+    }
+  )
+
 export default function TradingTerminal() {
 
   const [symbol, setSymbol] =
@@ -37,6 +49,9 @@ export default function TradingTerminal() {
 
   const [amount, setAmount] =
     useState('100')
+
+  const [duration, setDuration] =
+  useState(300)  
 
 const [loading,setLoading] =
   useState(false) 
@@ -189,6 +204,7 @@ const publicClient =
     /*
     PLACE PREDICTION
     */
+   const entryPrice = 100000
 
     await writeContractAsync({
 
@@ -199,11 +215,13 @@ const publicClient =
       functionName:
         'placePrediction',
 
-      args: [
-        coin,
-        isUp,
-        amountInUSDC,
-      ],
+args: [
+  coin,
+  isUp,
+  amountInUSDC,
+  BigInt(entryPrice),
+  BigInt(duration),
+]
 
     })
 
@@ -317,9 +335,61 @@ useEffect(() => {
         {/* TRADE PANEL */}
         <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
 
-          <h2 className="text-3xl font-bold mb-8">
-            Prediction Trade
-          </h2>
+ <div className="flex items-center justify-between mb-8">
+
+  <h2 className="text-3xl font-bold">
+    Prediction Trade
+  </h2>
+
+  <div className="flex gap-2">
+
+    <button
+      onClick={() => setDuration(60)}
+      className={`px-3 py-2 rounded-xl text-sm ${
+        duration === 60
+          ? 'bg-blue-600'
+          : 'bg-zinc-800'
+      }`}
+    >
+      1M
+    </button>
+
+    <button
+      onClick={() => setDuration(300)}
+      className={`px-3 py-2 rounded-xl text-sm ${
+        duration === 300
+          ? 'bg-blue-600'
+          : 'bg-zinc-800'
+      }`}
+    >
+      5M
+    </button>
+
+    <button
+      onClick={() => setDuration(900)}
+      className={`px-3 py-2 rounded-xl text-sm ${
+        duration === 900
+          ? 'bg-blue-600'
+          : 'bg-zinc-800'
+      }`}
+    >
+      15M
+    </button>
+
+    <button
+      onClick={() => setDuration(3600)}
+      className={`px-3 py-2 rounded-xl text-sm ${
+        duration === 3600
+          ? 'bg-blue-600'
+          : 'bg-zinc-800'
+      }`}
+    >
+      1H
+    </button>
+
+  </div>
+
+</div>
 
 {/* AMOUNT */}
 <div className="mt-6">
@@ -355,6 +425,27 @@ useEffect(() => {
       >
         USDC
       </span>
+
+<div className="mt-4">
+
+  <p className="text-sm text-zinc-400 mb-2">
+    Duration
+  </p>
+
+  <p className="text-sm text-green-500 mt-3">
+    Selected:
+    {
+      duration === 60
+        ? ' 1 Minute'
+        : duration === 300
+        ? ' 5 Minutes'
+        : duration === 900
+        ? ' 15 Minutes'
+        : ' 1 Hour'
+    }
+  </p>
+
+</div>
 
     </div>
 

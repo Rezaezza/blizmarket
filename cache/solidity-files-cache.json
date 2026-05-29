@@ -73,6 +73,43 @@
         "BlizPredictionMarket",
         "IERC20"
       ]
+    },
+    "C:\\Users\\ASUS\\blizmarket\\contracts\\BlizPredictionMarketV2.sol": {
+      "lastModificationDate": 1780041127086,
+      "contentHash": "9fbe75249d68ad47e8fabd9725b1a5dd",
+      "sourceName": "contracts/BlizPredictionMarketV2.sol",
+      "solcConfig": {
+        "version": "0.8.20",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "BlizPredictionMarketV2",
+        "IERC20"
+      ]
     }
   }
 }
