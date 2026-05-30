@@ -95,7 +95,7 @@ const publicClient =
 
         })
 
-      const trades = []
+       const activeTrades = []
 
       for (
         let i = 0;
@@ -118,46 +118,96 @@ const publicClient =
 
           })
 
-        if (
+ if (
 
-          trade[0]
-            .toLowerCase() ===
-          address
-            .toLowerCase()
+  trade[1]
+    .toLowerCase() ===
+  address
+    .toLowerCase()
 
-        ) {
+)  {
 
-          trades.push({
 
-            trader:
-              trade[0],
+if (!trade[7]) {
 
-            symbol:
-              trade[1],
+  activeTrades.push({
 
-            isUp:
-              trade[2],
+    id:
+      Number(trade[0]),
 
-            amount:
-              Number(
-                trade[3]
-              ) / 1_000_000,
+    trader:
+      trade[1],
 
-          })
+    symbol:
+      trade[2],
+
+    isUp:
+      trade[3],
+
+    amount:
+      Number(trade[4]) /
+      1_000_000,
+
+      entryPrice:
+  Number(trade[5]),
+
+    expiryTime:
+      Number(trade[6]),
+
+    settled:
+      trade[7],
+
+    won:
+      trade[8],
+
+    claimed:
+      trade[9],
+
+    reward:
+      Number(trade[10]) /
+      1_000_000,
+
+  })
+
+}
 
         }
 
       }
 
-      setPositions(
-        trades.reverse()
-      )
+ setPositions(
+  activeTrades.reverse()
+)
 
     } catch (err) {
 
       console.error(err)
 
     }
+
+  }
+
+  const getCurrentPrice =
+  async (
+    coin: string
+  ) => {
+
+    const symbol =
+      `${coin}USDT`
+
+    const res =
+      await fetch(
+
+        `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`
+
+      )
+
+    const data =
+      await res.json()
+
+    return Math.floor(
+      Number(data.price) * 100
+    )
 
   }
 
@@ -204,7 +254,10 @@ const publicClient =
     /*
     PLACE PREDICTION
     */
-   const entryPrice = 100000
+   const entryPrice =
+  await getCurrentPrice(
+    coin
+  )
 
     await writeContractAsync({
 
@@ -255,7 +308,133 @@ useEffect(() => {
 
   loadPositions()
 
+  const interval =
+    setInterval(
+      loadPositions,
+      5000
+    )
+
+  return () =>
+    clearInterval(
+      interval
+    )
+
 }, [address])
+
+const settleTrade =
+  async (
+    tradeId: number,
+    symbol: string
+  ) => {
+
+    try {
+
+      const finalPrice =
+        await getCurrentPrice(
+          symbol
+        )
+
+      await writeContractAsync({
+
+        address:
+          CONTRACT_ADDRESS,
+
+        abi,
+
+        functionName:
+          'settleTrade',
+
+        args: [
+
+          BigInt(
+            tradeId
+          ),
+
+          BigInt(
+            finalPrice
+          )
+
+        ],
+
+      })
+
+      await loadPositions()
+
+    } catch (err) {
+
+      console.error(
+        err
+      )
+
+    }
+
+  }
+
+  const claimReward =
+  async (
+    tradeId: number
+  ) => {
+
+    try {
+
+      await writeContractAsync({
+
+        address:
+          CONTRACT_ADDRESS,
+
+        abi,
+
+        functionName:
+          'claimReward',
+
+        args: [
+
+          BigInt(
+            tradeId
+          )
+
+        ],
+
+      })
+
+      loadPositions()
+
+    } catch (err) {
+
+      console.error(err)
+
+    }
+
+  }
+
+const getRemainingTime =
+  (
+    expiry: number
+  ) => {
+
+    const now =
+      Math.floor(
+        Date.now() / 1000
+      )
+
+    const diff =
+      expiry - now
+
+    if (
+      diff <= 0
+    )
+      return 'EXPIRED'
+
+    const minutes =
+      Math.floor(
+        diff / 60
+      )
+
+    const seconds =
+      diff % 60
+
+    return `${minutes}m ${seconds}s`
+  }
 
   return (
     <div className="grid xl:grid-cols-4 gap-6">
@@ -409,22 +588,12 @@ useEffect(() => {
         placeholder="0"
         style={{
           color: '#ffffff',
-          fontSize: '36px',
-          fontWeight: '700',
+          fontSize: '24px',
+          fontWeight: '600',
           background: 'transparent',
         }}
         className="w-full outline-none"
       />
-
-      <span
-        style={{
-          color: '#60a5fa',
-          fontSize: '28px',
-          fontWeight: '700',
-        }}
-      >
-        USDC
-      </span>
 
 <div className="mt-4">
 
@@ -466,16 +635,6 @@ useEffect(() => {
 
           </div>
 
-          {/* TIMER */}
-          <div className="flex items-center gap-3 bg-zinc-900 rounded-2xl px-5 py-4 mt-6">
-
-            <Clock3 size={22} />
-
-            <span className="text-lg">
-              Expires in 5 Minutes
-            </span>
-
-          </div>
 
           {/* BUTTONS */}
           <div className="grid grid-cols-2 gap-4 mt-8">
@@ -549,40 +708,148 @@ useEffect(() => {
           index
         ) => (
 
-          <div
-            key={index}
-            className="bg-zinc-900 rounded-2xl p-4"
-          >
+ <div
+  key={index}
+  className="bg-zinc-900 rounded-2xl p-4"
+>
 
-            <div className="flex justify-between">
+  <div className="flex justify-between">
 
-              <span>
+    <div>
 
-                {trade.symbol}
-                {' '}
-                {trade.isUp
-                  ? 'UP'
-                  : 'DOWN'}
+      <p className="font-bold">
 
-              </span>
+        {trade.symbol}
+        {' '}
+        {trade.isUp
+          ? 'UP'
+          : 'DOWN'}
 
-              <span
-                className={
-                  trade.isUp
-                    ? 'text-green-500'
-                    : 'text-red-500'
-                }
-              >
+      </p>
 
-                {trade.amount}
-                {' '}
-                USDC
+      <p className="text-sm text-zinc-400">
 
-              </span>
+        Position Size:
+        {' '}
+        {trade.amount}
+        {' '}
+        USDC
 
-            </div>
+      </p>
 
-          </div>
+      <p className="text-sm text-zinc-500">
+
+  Entry Price:
+  {' '}
+  {
+    trade.entryPrice
+      ? (
+          trade.entryPrice /
+          100
+        ).toLocaleString()
+      : '-'
+  }
+
+</p>
+
+    </div>
+
+    <div className="text-right">
+
+      {!trade.settled ? (
+
+        <p className="text-yellow-500">
+
+          {
+            getRemainingTime(
+              trade.expiryTime
+            )
+          }
+
+        </p>
+
+      ) : trade.won ? (
+
+        <p className="text-green-500">
+          WIN
+        </p>
+
+      ) : (
+
+        <p className="text-red-500">
+          LOSS
+        </p>
+
+      )}
+
+    </div>
+
+  </div>
+
+  <div className="flex gap-2 mt-4">
+
+    {
+      !trade.settled &&
+      Math.floor(
+        Date.now() / 1000
+      ) >=
+      trade.expiryTime && (
+
+        <button
+
+ onClick={() =>
+  settleTrade(
+    trade.id,
+    trade.symbol
+  )
+}
+
+          className="
+          bg-yellow-500
+          text-black
+          px-4
+          py-2
+          rounded-xl
+          "
+
+        >
+          SETTLE
+        </button>
+
+      )
+    }
+
+    {
+      trade.settled &&
+      trade.won &&
+      !trade.claimed && (
+
+        <button
+
+          onClick={() =>
+            claimReward(
+              trade.id
+            )
+          }
+
+          className="
+          bg-green-500
+          text-black
+          px-4
+          py-2
+          rounded-xl
+          "
+
+        >
+          CLAIM
+        </button>
+
+      )
+    }
+
+  </div>
+
+</div>
 
         )
 

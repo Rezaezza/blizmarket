@@ -1,10 +1,8 @@
 'use client'
 
 import {
-  TrendingUp,
   Wallet,
   Trophy,
-  Activity,
 } from 'lucide-react'
 
 import {
@@ -40,6 +38,157 @@ const [wins, setWins] =
 
 const [losses, setLosses] =
   useState(0)
+
+const [activePositions, setActivePositions] =
+  useState<any[]>([])
+
+const [history, setHistory] =
+  useState<any[]>([])
+
+const loadTrades = async () => {
+
+  if (
+    !address ||
+    !publicClient
+  ) return
+
+  try {
+
+    const count =
+      await publicClient.readContract({
+
+        address:
+          CONTRACT_ADDRESS,
+
+        abi,
+
+        functionName:
+          'getTradesCount',
+
+      })
+
+    const active = []
+
+    const closed = []
+
+    for (
+      let i = 0;
+      i < Number(count);
+      i++
+    ) {
+
+      const trade =
+        await publicClient.readContract({
+
+          address:
+            CONTRACT_ADDRESS,
+
+          abi,
+
+          functionName:
+            'getTrade',
+
+          args: [BigInt(i)],
+
+        })
+
+      if (
+        trade[1]
+          .toLowerCase() !==
+        address
+          .toLowerCase()
+      ) continue
+
+      const item = {
+
+        id:
+          Number(
+            trade[0]
+          ),
+
+        coin:
+          trade[2],
+
+        side:
+          trade[3]
+            ? 'UP'
+            : 'DOWN',
+
+        amount:
+          (
+            Number(
+              trade[4]
+            ) / 1_000_000
+          ).toFixed(2),
+
+        settled:
+          trade[7],
+
+        won:
+          trade[8],
+
+        reward:
+          (
+            Number(
+              trade[10]
+            ) / 1_000_000
+          ).toFixed(2),
+
+      }
+
+      if (
+        item.settled
+      ) {
+
+        closed.push({
+
+          ...item,
+
+          result:
+            item.won
+              ? 'WIN'
+              : 'LOSS',
+
+          payout:
+            item.won
+              ? `${item.reward} USDC`
+              : '0 USDC',
+
+        })
+
+      } else {
+
+        active.push({
+
+          ...item,
+
+          pnl:
+            `${item.amount} USDC`,
+
+          color:
+            'text-yellow-500',
+
+        })
+
+      }
+
+    }
+
+    setActivePositions(
+      active.reverse()
+    )
+
+    setHistory(
+      closed.reverse()
+    )
+
+  } catch (err) {
+
+    console.error(err)
+
+  }
+
+}
 
 useEffect(() => {
 
@@ -121,6 +270,8 @@ useEffect(() => {
 
   loadStats()
 
+loadTrades()
+
 }, [address, publicClient])
 
   return (
@@ -140,7 +291,7 @@ useEffect(() => {
       </div>
 
       {/* STATS */}
-      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
         {/* BALANCE */}
         <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
@@ -160,25 +311,7 @@ useEffect(() => {
           </h3>
 
         </div>
-
-        {/* PNL */}
-        <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
-
-          <div className="flex items-center justify-between">
-
-            <h2 className="text-zinc-400 text-lg">
-              Total PNL
-            </h2>
-
-            <TrendingUp size={24} />
-
-          </div>
-
-          <h3 className="text-4xl font-bold mt-6 text-green-500">
-            +2,420 USDC
-          </h3>
-
-        </div>
+ 
 
         {/* WIN RATE */}
         <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
@@ -212,61 +345,29 @@ useEffect(() => {
 
           <div className="flex items-center justify-between">
 
-            <h2 className="text-zinc-400 text-lg">
-              Total Trades
-            </h2>
-
-            <Activity size={24} />
+           <h2 className="text-zinc-400 text-lg">
+              Loss Rate
+           </h2>
 
           </div>
 
-          <h3 className="text-4xl font-bold mt-6">
-            {wins + losses}
-          </h3>
+ <h3 className="text-4xl font-bold mt-6 text-red-500">
+  {
+    wins + losses > 0
+      ? (
+          losses /
+          (wins + losses) *
+          100
+        ).toFixed(1)
+      : 0
+  }%
+</h3>
 
         </div>
 
       </div>
 
-      {/* ACTIVE POSITIONS */}
-      <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 mt-10">
-
-        <h2 className="text-4xl font-bold mb-8">
-          Active Positions
-        </h2>
-
-        <div className="space-y-5">
-
-          {activePositions.map((position, index) => (
-
-            <div
-              key={index}
-              className="bg-zinc-900 rounded-2xl p-6 flex justify-between items-center"
-            >
-
-              <div>
-
-                <h3 className="text-2xl font-bold">
-                  {position.coin} {position.side}
-                </h3>
-
-                <p className="text-zinc-400 mt-2">
-                  Position Size: {position.amount}
-                </p>
-
-              </div>
-
-              <div className={`text-2xl font-bold ${position.color}`}>
-                {position.pnl}
-              </div>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
+ 
 
       {/* HISTORY */}
       <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 mt-10">
