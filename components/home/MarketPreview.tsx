@@ -66,7 +66,7 @@ export default function MarketPreview() {
   }, [])
 
   return (
-    <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 w-full max-w-xl">
+  <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 w-full max-w-xl">
 
       {coins.map((coin, index) => {
 
@@ -74,9 +74,9 @@ export default function MarketPreview() {
           Number(coin.change) >= 0
 
         return (
-          <div
-            key={index}
-            className={`flex items-center justify-between py-5 ${
+   <div
+  key={index}
+  className={`flex items-center justify-between py-5 px-8 ${
               index !== coins.length - 1
                 ? 'border-b border-zinc-800'
                 : ''
@@ -84,7 +84,7 @@ export default function MarketPreview() {
           >
 
             {/* LEFT */}
-            <div>
+           <div className="pl-8">
 
               <h3 className="text-3xl font-bold">
                 {coin.symbol} / USDC
@@ -94,7 +94,7 @@ export default function MarketPreview() {
             </div>
 
             {/* RIGHT */}
-            <div className="text-right">
+            <div className="ml-auto text-right">
 
               <h3
                 className={`text-3xl font-bold ${

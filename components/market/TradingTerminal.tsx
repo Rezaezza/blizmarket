@@ -48,7 +48,7 @@ export default function TradingTerminal() {
     useState('BINANCE:BTCUSDT')
 
   const [amount, setAmount] =
-    useState('100')
+  useState('0')
 
   const [duration, setDuration] =
   useState(300)  
