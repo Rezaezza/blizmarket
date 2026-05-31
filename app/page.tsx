@@ -62,7 +62,7 @@ export default function HomePage() {
           className="grid md:grid-cols-4 gap-6 mt-20 max-w-6xl mx-auto"
         >
 
-    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+    <div className="bg-white/5 backdrop-blur-xl border border-blue-500/30 rounded-3xl p-8">
 
   <h2 className="text-3xl font-bold text-blue-400">
     Live Market Pricing
@@ -74,7 +74,7 @@ export default function HomePage() {
 
 </div>
 
- <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+ <div className="bg-white/5 backdrop-blur-xl border border-blue-500/30 rounded-3xl p-8">
 
 <h2 className="text-3xl font-bold text-green-400">
   Transparent Trading
@@ -86,7 +86,7 @@ export default function HomePage() {
 
           </div>
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+          <div className="bg-white/5 backdrop-blur-xl border border-blue-500/30 rounded-3xl p-8">
 
  <h2 className="text-3xl font-bold text-yellow-400">
   Instant Predictions
@@ -98,7 +98,7 @@ export default function HomePage() {
 
           </div>
 
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+          <div className="bg-white/5 backdrop-blur-xl border border-blue-500/30 rounded-3xl p-8">
 
   <h2 className="text-3xl font-bold text-purple-400">
   Built on Arc Network
@@ -242,6 +242,63 @@ export default function HomePage() {
       a secure and rewarding prediction experience for everyone.
 
     </p>
+
+  </div>
+
+</section>
+
+{/* COMMUNITY */}
+
+<section className="relative z-10 px-8 py-24">
+
+  <div className="max-w-4xl mx-auto text-center">
+
+    <h2 className="text-5xl font-bold mb-6">
+      Join The BlizMarket Community
+    </h2>
+
+    <p className="text-zinc-400 text-xl mb-12">
+      Stay updated with the latest announcements, product updates,
+      and documentation.
+    </p>
+
+<div className="flex flex-col items-center gap-10">
+
+  <a
+    href="https://x.com/blizmarket01"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="
+      px-10
+      py-4
+      rounded-2xl
+      bg-blue-500
+      hover:bg-blue-600
+      transition
+      font-bold
+      text-lg
+    "
+  >
+    Twitter
+  </a>
+
+  <a
+  href="https://blizmarket.gitbook.io/blizmarket-docs/"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="
+    text-blue-400
+    hover:text-blue-300
+    transition
+    font-bold
+    text-xl
+    mt-12
+  "
+>
+  Docs
+</a>
+
+</div>
 
   </div>
 
