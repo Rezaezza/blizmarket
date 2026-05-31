@@ -13,6 +13,7 @@ import {
 import {
   useAccount,
   usePublicClient,
+  useWriteContract,
 } from 'wagmi'
 
 import abi from '@/abi/BlizPredictionMarket.json'
@@ -20,6 +21,8 @@ import abi from '@/abi/BlizPredictionMarket.json'
 import {
   CONTRACT_ADDRESS,
 } from '@/lib/contract'
+
+import usdcAbi from '@/abi/USDC.json'
 
 
 export default function PortfolioPage() {
@@ -30,6 +33,13 @@ export default function PortfolioPage() {
 const publicClient =
   usePublicClient()
 
+const {
+  writeContractAsync,
+} = useWriteContract()  
+
+const [walletBalance, setWalletBalance] =
+  useState(0)  
+
 const [volume, setVolume] =
   useState(0)
 
@@ -39,8 +49,6 @@ const [wins, setWins] =
 const [losses, setLosses] =
   useState(0)
 
-const [activePositions, setActivePositions] =
-  useState<any[]>([])
 
 const [history, setHistory] =
   useState<any[]>([])
@@ -90,7 +98,7 @@ const loadTrades = async () => {
 
           args: [BigInt(i)],
 
-        })
+        })  as any
 
       if (
         trade[1]
@@ -126,6 +134,9 @@ const loadTrades = async () => {
 
         won:
           trade[8],
+
+         claimed:
+           trade[9], 
 
         reward:
           (
@@ -174,9 +185,6 @@ const loadTrades = async () => {
 
     }
 
-    setActivePositions(
-      active.reverse()
-    )
 
     setHistory(
       closed.reverse()
@@ -189,6 +197,41 @@ const loadTrades = async () => {
   }
 
 }
+
+const claimReward =
+  async (
+    tradeId: number
+  ) => {
+
+    try {
+
+      await writeContractAsync({
+
+        address:
+          CONTRACT_ADDRESS,
+
+        abi,
+
+        functionName:
+          'claimReward',
+
+        args: [
+          BigInt(tradeId)
+        ],
+
+      })
+
+      await loadTrades()
+
+      window.location.reload()
+
+    } catch (err) {
+
+      console.error(err)
+
+    }
+
+  }
 
 useEffect(() => {
 
@@ -247,6 +290,27 @@ useEffect(() => {
 
           })
 
+          const usdcBalance =
+  await publicClient.readContract({
+
+    address:
+      '0x3600000000000000000000000000000000000000',
+
+    abi:
+      usdcAbi,
+
+    functionName:
+      'balanceOf',
+
+    args: [address],
+
+  })
+
+setWalletBalance(
+  Number(usdcBalance) /
+  1_000_000
+)
+
         setVolume(
           Number(userVolume) /
           1_000_000
@@ -274,6 +338,8 @@ loadTrades()
 
 }, [address, publicClient])
 
+
+
   return (
     <div className="min-h-screen bg-black text-white p-8">
 
@@ -291,16 +357,16 @@ loadTrades()
       </div>
 
       {/* STATS */}
-      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
 
         {/* BALANCE */}
         <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
 
           <div className="flex items-center justify-between">
 
-            <h2 className="text-zinc-400 text-lg">
-              Wallet Balance
-            </h2>
+ <h2 className="text-zinc-400 text-lg">
+  Trading Volume
+</h2>
 
             <Wallet size={24} />
 
@@ -366,6 +432,24 @@ loadTrades()
         </div>
 
       </div>
+
+      <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+
+  <div className="flex items-center justify-between">
+
+    <h2 className="text-zinc-400 text-lg">
+      Wallet Balance
+    </h2>
+
+    <Wallet size={24} />
+
+  </div>
+
+  <h3 className="text-4xl font-bold mt-6 text-green-500">
+    {walletBalance.toFixed(2)} USDC
+  </h3>
+
+</div>
 
  
 

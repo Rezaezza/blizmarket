@@ -47,8 +47,8 @@ export default function Navbar() {
             {/* HEADER */}
             <div className="flex items-center justify-between mb-12">
 
-              <h2 className="text-3xl font-bold text-white">
-                Menu
+              <h2 className="text-3xl font-bold text-red-500">
+                 Menu
               </h2>
 
               <button

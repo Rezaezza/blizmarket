@@ -116,7 +116,7 @@ const publicClient =
 
             args: [BigInt(i)],
 
-          })
+          })  as any
 
  if (
 

@@ -73,7 +73,7 @@ const connectors = connectorsForWallets(
   ],
   {
     appName: 'BlizMarket',
-    projectId: 'blizmarket',
+    projectId: '6088c1e828f92aef4032cd781419d077',
   }
 )
 
