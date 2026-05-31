@@ -385,17 +385,47 @@ loadTrades()
               className="bg-zinc-900 rounded-2xl p-6 flex justify-between items-center"
             >
 
-              <div>
+ <div>
 
-                <h3 className="text-2xl font-bold">
-                  {trade.coin} {trade.side}
-                </h3>
+  <h3 className="text-2xl font-bold">
+    {trade.coin} {trade.side}
+  </h3>
 
-                <p className="text-zinc-400 mt-2">
-                  Result: {trade.result}
-                </p>
+  <p className="text-zinc-400 mt-2">
+    Result: {trade.result}
+  </p>
 
-              </div>
+  {trade.result === 'WIN' && !trade.claimed && (
+
+    <button
+      onClick={() =>
+        claimReward(
+          trade.id
+        )
+      }
+      className="
+      mt-4
+      bg-green-500
+      text-black
+      px-4
+      py-2
+      rounded-xl
+      "
+    >
+      CLAIM
+    </button>
+
+  )}
+
+  {trade.claimed && (
+
+    <p className="text-green-500 mt-3">
+      CLAIMED ✅
+    </p>
+
+  )}
+
+</div>
 
               <div
                 className={`text-2xl font-bold ${

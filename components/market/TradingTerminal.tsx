@@ -819,33 +819,7 @@ const getRemainingTime =
       )
     }
 
-    {
-      trade.settled &&
-      trade.won &&
-      !trade.claimed && (
-
-        <button
-
-          onClick={() =>
-            claimReward(
-              trade.id
-            )
-          }
-
-          className="
-          bg-green-500
-          text-black
-          px-4
-          py-2
-          rounded-xl
-          "
-
-        >
-          CLAIM
-        </button>
-
-      )
-    }
+ 
 
   </div>
 
