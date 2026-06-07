@@ -187,18 +187,31 @@ if (!trade[7]) {
 
   }
 
-  const getCurrentPrice =
+ const getCurrentPrice =
   async (
     coin: string
   ) => {
 
-    const symbol =
-      `${coin}USDT`
+    const coinMap: Record<
+      string,
+      string
+    > = {
+
+      BTC: 'bitcoin',
+
+      ETH: 'ethereum',
+
+      SOL: 'solana',
+
+    }
+
+    const coinId =
+      coinMap[coin]
 
     const res =
       await fetch(
 
-        `https://api.binance.com/api/v3/ticker/price?symbol=${symbol}`
+        `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`
 
       )
 
@@ -206,7 +219,7 @@ if (!trade[7]) {
       await res.json()
 
     return Math.floor(
-      Number(data.price) * 100
+      data[coinId].usd * 100
     )
 
   }

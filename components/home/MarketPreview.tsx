@@ -12,58 +12,84 @@ export default function MarketPreview() {
 
   const [coins, setCoins] = useState<CoinData[]>([])
 
-  useEffect(() => {
+useEffect(() => {
 
-    const fetchMarkets = async () => {
+  const fetchMarkets = async () => {
 
-      try {
+    try {
 
-        const symbols = [
-          'BTCUSDT',
-          'ETHUSDT',
-          'SOLUSDT',
-        ]
+      const res =
+        await fetch(
 
-        const results = await Promise.all(
-
-          symbols.map(async (symbol) => {
-
-            const res =
-              await fetch(
-                `https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`
-              )
-
-            const data = await res.json()
-
-            return {
-              symbol: symbol.replace('USDT', ''),
-              price: Number(data.lastPrice).toLocaleString(),
-              change: Number(
-                data.priceChangePercent
-              ).toFixed(2),
-            }
-          })
+          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true'
 
         )
 
-        setCoins(results)
+      const data =
+        await res.json()
 
-      } catch (error) {
+      const results = [
 
-        console.error(error)
+        {
+          symbol: 'BTC',
+          price:
+            Number(
+              data.bitcoin.usd
+            ).toLocaleString(),
+          change:
+            Number(
+              data.bitcoin.usd_24h_change
+            ).toFixed(2),
+        },
 
-      }
+        {
+          symbol: 'ETH',
+          price:
+            Number(
+              data.ethereum.usd
+            ).toLocaleString(),
+          change:
+            Number(
+              data.ethereum.usd_24h_change
+            ).toFixed(2),
+        },
+
+        {
+          symbol: 'SOL',
+          price:
+            Number(
+              data.solana.usd
+            ).toLocaleString(),
+          change:
+            Number(
+              data.solana.usd_24h_change
+            ).toFixed(2),
+        },
+
+      ]
+
+      setCoins(results)
+
+    } catch (error) {
+
+      console.error(error)
 
     }
 
-    fetchMarkets()
+  }
 
-    const interval =
-      setInterval(fetchMarkets, 10000)
+  fetchMarkets()
 
-    return () => clearInterval(interval)
+  const interval =
+    setInterval(
+      fetchMarkets,
+      10000
+    )
 
-  }, [])
+  return () =>
+    clearInterval(interval)
+
+}, [])
 
   return (
   <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-8 w-full max-w-xl">
