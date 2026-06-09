@@ -283,9 +283,7 @@ export default function HomePage() {
   </a>
 
   <a
-  href="https://blizmarket.gitbook.io/blizmarket-docs/"
-  target="_blank"
-  rel="noopener noreferrer"
+  href="/docs"
   className="
     text-blue-400
     hover:text-blue-300
