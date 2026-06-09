@@ -41,6 +41,18 @@ export default function HomePage() {
 
         </motion.h1>
 
+        <div className="mt-8 inline-flex items-center gap-3 rounded-full border border-blue-500/30 bg-blue-500/10 px-6 py-3">
+
+  <span className="h-3 w-3 rounded-full bg-green-400 animate-pulse" />
+
+  <span className="text-blue-300 font-semibold">
+
+    Live on Arc Testnet • USDC Settlement • MVP
+
+  </span>
+
+</div>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -173,11 +185,11 @@ export default function HomePage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
 
             <h3 className="text-3xl font-bold">
-              Real-Time Markets
+              USDC Settlement
             </h3>
 
             <p className="text-zinc-400 mt-6 text-lg leading-relaxed">
-              Live crypto prediction trading powered by real-time global market data.
+              USDC is used as the core settlement asset for prediction collateral and reward payouts, providing stable-value trading on Arc Testnet.
             </p>
 
           </div>
@@ -185,11 +197,11 @@ export default function HomePage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
 
             <h3 className="text-3xl font-bold">
-              Advanced Charts
+              Built on Arc Network
             </h3>
 
             <p className="text-zinc-400 mt-6 text-lg leading-relaxed">
-              Professional candlestick charting for accurate market analysis.
+              BlizMarket is deployed on Arc Testnet, enabling transparent onchain prediction trading with fast confirmations and low transaction costs.
             </p>
 
           </div>
@@ -197,11 +209,11 @@ export default function HomePage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
 
             <h3 className="text-3xl font-bold">
-              Decentralized Trading
+              Transparent Smart Contracts
             </h3>
 
             <p className="text-zinc-400 mt-6 text-lg leading-relaxed">
-              Transparent onchain prediction trading secured by blockchain technology.
+              Prediction positions, settlements, and rewards are executed through smart contracts deployed on Arc Testnet.
             </p>
 
           </div>
@@ -209,11 +221,11 @@ export default function HomePage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
 
             <h3 className="text-3xl font-bold">
-              Professional Interface
+              Prediction Infrastructure
             </h3>
 
             <p className="text-zinc-400 mt-6 text-lg leading-relaxed">
-              Premium trading experience inspired by global crypto exchanges.
+              BlizMarket provides a complete prediction market experience including trading, portfolio tracking, treasury management, and future leaderboard analytics.
             </p>
 
           </div>
@@ -242,6 +254,83 @@ export default function HomePage() {
       a secure and rewarding prediction experience for everyone.
 
     </p>
+
+    <section className="relative z-10 px-8 py-24">
+
+<div className="max-w-6xl mx-auto">
+
+<h2 className="text-5xl font-bold text-center mb-14">
+
+Live Project
+
+</h2>
+
+<div className="grid md:grid-cols-2 gap-8">
+
+<div className="bg-zinc-900 rounded-3xl p-8">
+
+<h3 className="text-2xl font-bold mb-5">
+
+Contract
+
+</h3>
+
+<p className="text-zinc-400 break-all">
+
+0x084A95B785e52F859b3c737d4e4A11333dEec619
+
+</p>
+
+<a
+
+href="https://testnet.arcscan.app/address/0x084A95B785e52F859b3c737d4e4A11333dEec619"
+
+target="_blank"
+
+className="text-blue-400 mt-5 inline-block"
+
+>
+
+View on ArcScan →
+
+</a>
+
+</div>
+
+<div className="bg-zinc-900 rounded-3xl p-8">
+
+<h3 className="text-2xl font-bold mb-5">
+
+Source Code
+
+</h3>
+
+<p className="text-zinc-400">
+
+Open-source frontend and smart contract.
+
+</p>
+
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+<div className="mt-24 text-center">
+
+<p className="text-yellow-500">
+
+⚠ BlizMarket is currently deployed on Arc Testnet for testing and ecosystem validation.
+
+No real-money trading is supported.
+
+</p>
+
+</div>
+
 
   </div>
 
